@@ -1,0 +1,54 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    branches: [ "main", "feat/**", "fix/**" ]
+    paths:
+      - "web_stridetastic/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "**/Dockerfile"
+      - ".github/workflows/frontend-ci.yml"
+  push:
+    branches: [ "main" ]
+    paths:
+      - "web_stridetastic/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "**/Dockerfile"
+      - ".github/workflows/frontend-ci.yml"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web_stridetastic
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test -- --runInBand
+
+      - name: Build
+        run: pnpm build
