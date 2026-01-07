@@ -1,0 +1,13 @@
+# Python
+**/__pycache__/
+**/*.pyc
+.venv/
+
+# Node / Next
+web_stridetastic/node_modules/
+web_stridetastic/.next/
+web_stridetastic/.turbo/
+
+# General
+.git/
+.DS_Store
