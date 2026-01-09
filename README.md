@@ -33,6 +33,7 @@ Stridetastic is an open-source monitoring and observability framework for Meshta
   - Node telemetry, latency, and position history panels.
   - Capture management, interface controls, and publishing workflows (manual/ reactive/ periodic) all from the browser.
 - Grafana suite covering KPIs, geographic coverage, node health, packet flow, channel activity, routing, link quality, anomaly detection, SLA/compliance, and infrastructure capacity (Not fully developed).
+- Includes a security detection dashboard for CVE-2025-53627 DM downgrade attempts (C1).
 - Wireshark dissector (`wireshark/meshtastic.lua`) that reads PCAP-NG comments to auto-select the right protobuf schema for each packet.
 
 ## Demo
