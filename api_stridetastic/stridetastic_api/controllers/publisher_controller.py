@@ -1,7 +1,7 @@
 from typing import List, Optional, Sequence, Dict, Any
 
 from django.conf import settings  # type: ignore[import]
-from ninja_extra import api_controller, route, permissions  # type: ignore[import]
+from ninja_extra import api_controller, route  # type: ignore[import]
 from ninja_jwt.authentication import JWTAuth  # type: ignore[import]
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -33,10 +33,11 @@ from ..tasks.publisher_tasks import (
     publish_reachability_probe_task,
     publish_telemetry_task,
 )
+from ..permissions import IsPrivilegedUser
 
 auth = JWTAuth()
 
-@api_controller("/publisher", tags=["Publisher"], permissions=[permissions.IsAuthenticated])
+@api_controller("/publisher", tags=["Publisher"], permissions=[IsPrivilegedUser])
 class PublisherController:
 
     def __init__(self):

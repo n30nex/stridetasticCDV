@@ -3,6 +3,8 @@ import dynamic from 'next/dynamic';
 import { ForceGraphNode, ForceGraphLink } from '@/types';
 
 const ForceGraph2D = dynamic(() => import('react-force-graph-2d'), { ssr: false });
+const GRAPH_LABEL_COLOR = '#e7f2ee';
+const GRAPH_LABEL_STROKE = '#06110e';
 
 export interface GraphCanvasRef {
   zoom: (scale?: number) => number | void;
@@ -337,8 +339,8 @@ export const GraphCanvas = forwardRef<GraphCanvasRef, GraphCanvasProps>(({
       ctx.font = `bold ${fontSize}px Sans-Serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#000000';
-      ctx.strokeStyle = '#ffffff';
+      ctx.fillStyle = GRAPH_LABEL_COLOR;
+      ctx.strokeStyle = GRAPH_LABEL_STROKE;
       ctx.lineWidth = 2 / globalScale;
       
       ctx.strokeText(label, node.x, node.y);

@@ -28,6 +28,11 @@ import { NodeInfoPanel } from './NodeInfoPanel';
 import { getPublishingReturnFocus, clearPublishingReturnFocus } from '@/lib/publishingNavigation';
 import { BRAND_ACCENT, BRAND_PRIMARY, BRAND_PRIMARY_DARK } from '@/lib/brandColors';
 
+const GRAPH_LABEL_COLOR = '#e7f2ee';
+const GRAPH_LABEL_STROKE = '#06110e';
+const MQTT_BORDER_COLOR = '#5b3dc4';
+const MQTT_DIM_BORDER = '#3b4b45';
+
 interface NetworkGraphProps {
   className?: string;
   onNavigateToMap?: (nodeId: string) => void;
@@ -573,10 +578,10 @@ export default function NetworkGraph({ className = '', onNavigateToMap }: Networ
       ctx.arc(node.x, node.y, nodeSize, 0, 2 * Math.PI, false);
       
       // Dim the border if the node itself is dimmed
-      if (nodeColor === '#d1d5db') {
-        ctx.strokeStyle = '#9ca3af'; // Dimmed border color
+      if (nodeColor === '#2b3a35') {
+        ctx.strokeStyle = MQTT_DIM_BORDER; // Dimmed border color
       } else {
-        ctx.strokeStyle = '#4c1d95'; // Normal darker purple border
+        ctx.strokeStyle = MQTT_BORDER_COLOR; // Normal darker purple border
       }
       
       ctx.lineWidth = 2 / Math.sqrt(globalScale);
@@ -609,7 +614,7 @@ export default function NetworkGraph({ className = '', onNavigateToMap }: Networ
     } else if (isSecondSelected && !node.isHidden) {
       ctx.beginPath();
       ctx.arc(node.x, node.y, nodeSize + ringOffset, 0, 2 * Math.PI, false);
-      ctx.strokeStyle = '#059669';
+      ctx.strokeStyle = '#ff4b4b';
       ctx.lineWidth = ringWidth;
       ctx.stroke();
     }
@@ -623,8 +628,8 @@ export default function NetworkGraph({ className = '', onNavigateToMap }: Networ
       ctx.font = `bold ${fontSize}px Sans-Serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#000000';
-      ctx.strokeStyle = '#ffffff';
+      ctx.fillStyle = GRAPH_LABEL_COLOR;
+      ctx.strokeStyle = GRAPH_LABEL_STROKE;
       ctx.lineWidth = 2 / globalScale;
       
       ctx.strokeText(label, node.x, node.y);
@@ -704,9 +709,9 @@ export default function NetworkGraph({ className = '', onNavigateToMap }: Networ
   }, [memoizedGraphData]);
 
   return (
-    <div 
-      className={`relative bg-gray-50 text-gray-900 h-full min-h-screen ${className}`} 
-      style={{ backgroundColor: '#f9fafb', color: '#111827' }}
+    <div
+      className={`relative h-full min-h-screen ${className}`}
+      style={{ backgroundColor: 'var(--cv-bg-1)', color: 'var(--cv-text-strong)' }}
     >
       {/* Header with controls */}
       <GraphControls
@@ -741,9 +746,13 @@ export default function NetworkGraph({ className = '', onNavigateToMap }: Networ
 
       {/* Error message */}
       {error && (
-        <div 
-          className="border rounded-lg p-4 mb-4" 
-          style={{ backgroundColor: '#fef2f2', borderColor: '#fecaca', color: '#b91c1c' }}
+        <div
+          className="border rounded-lg p-4 mb-4"
+          style={{
+            backgroundColor: 'rgba(255, 75, 75, 0.12)',
+            borderColor: 'rgba(255, 75, 75, 0.4)',
+            color: '#ff8a8a',
+          }}
         >
           <p>{error}</p>
         </div>
@@ -752,9 +761,14 @@ export default function NetworkGraph({ className = '', onNavigateToMap }: Networ
       {/* Main content */}
       <div className="space-y-4">
         {/* Graph container */}
-        <div 
-          className="rounded-lg border shadow-sm overflow-hidden relative transition-all duration-300 ease-in-out" 
-          style={{ backgroundColor: '#ffffff', borderColor: '#e5e7eb', height: graphContainerHeight, minHeight: '20rem' }}
+        <div
+          className="rounded-lg border shadow-sm overflow-hidden relative transition-all duration-300 ease-in-out"
+          style={{
+            backgroundColor: 'var(--cv-surface-1)',
+            borderColor: 'var(--cv-border)',
+            height: graphContainerHeight,
+            minHeight: '20rem',
+          }}
         >
           <div id="graph-container" className="w-full h-full">
             {(memoizedGraphData.nodes.length > 0) && (
@@ -782,16 +796,16 @@ export default function NetworkGraph({ className = '', onNavigateToMap }: Networ
           </div>
           {/* Loading overlay: only show for initial/full load, not incremental refresh */}
           {isLoading && !isIncrementalLoading && (
-            <div 
-              className="absolute inset-0 flex items-center justify-center" 
-              style={{ backgroundColor: 'rgba(255, 255, 255, 0.75)' }}
+            <div
+              className="absolute inset-0 flex items-center justify-center"
+              style={{ backgroundColor: 'rgba(7, 17, 15, 0.8)' }}
             >
               <div className="text-center">
                 <div 
                   className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-2" 
                   style={{ borderColor: BRAND_PRIMARY, borderTopColor: 'transparent' }} 
                 />
-                <p style={{ color: '#4b5563' }}>Loading network data...</p>
+                <p style={{ color: 'var(--cv-text-muted)' }}>Loading network data...</p>
               </div>
             </div>
           )}
@@ -828,7 +842,7 @@ export default function NetworkGraph({ className = '', onNavigateToMap }: Networ
                 <NodeInfoPanel 
                   node={secondSelectedNode} 
                   title="Second Selected Node"
-                  borderColor="#10b981"
+                  borderColor="#ff4b4b"
                   onNavigateToMap={onNavigateToMap}
                 />
               )}

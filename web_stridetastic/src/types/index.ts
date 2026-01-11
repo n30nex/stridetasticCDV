@@ -12,7 +12,9 @@ export interface TokenResponse {
 export interface User {
   id: number;
   username: string;
-  email?: string;
+  email?: string | null;
+  is_staff?: boolean;
+  is_superuser?: boolean;
 }
 
 // API Response types

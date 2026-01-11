@@ -2,6 +2,7 @@ from typing import Dict
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.contrib.auth import get_user_model
 
 from stridetastic_api.models import (
     Node,
@@ -44,6 +45,7 @@ class Command(BaseCommand):
         default_channel.interfaces.add(mqtt_interface)
 
         self._seed_default_virtual_node()
+        self._seed_guest_user()
 
         self.stdout.write(self.style.SUCCESS("Successfully seeded the database"))
 
@@ -125,3 +127,36 @@ class Command(BaseCommand):
         except VirtualNodeError as exc:
             raise CommandError(f"Seed virtual node key pair already in use: {exc}") from exc
         return True
+
+    def _seed_guest_user(self) -> None:
+        username = (settings.DEFAULT_GUEST_USERNAME or "").strip()
+        password = settings.DEFAULT_GUEST_PASSWORD or ""
+        if not username or not password:
+            return
+
+        User = get_user_model()
+        user = User.objects.filter(username=username).first()
+        created = False
+
+        if user is None:
+            user = User.objects.create_user(
+                username=username,
+                email=settings.DEFAULT_GUEST_EMAIL or "",
+                password=password,
+            )
+            created = True
+
+        updated = False
+        if settings.DEFAULT_GUEST_EMAIL and user.email != settings.DEFAULT_GUEST_EMAIL:
+            user.email = settings.DEFAULT_GUEST_EMAIL
+            updated = True
+        if user.is_staff or user.is_superuser:
+            user.is_staff = False
+            user.is_superuser = False
+            updated = True
+        if created or settings.DEFAULT_GUEST_RESET_PASSWORD:
+            user.set_password(password)
+            updated = True
+
+        if updated:
+            user.save()

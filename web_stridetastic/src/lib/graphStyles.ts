@@ -1,6 +1,10 @@
 import { ForceGraphNode, ForceGraphLink } from '@/types';
 import { BRAND_PRIMARY, BRAND_PRIMARY_DARK } from '@/lib/brandColors';
 
+const DIM_NODE_COLOR = '#2f3f39';
+const HIDDEN_NODE_COLOR = '#1f2b27';
+const DIM_MQTT_COLOR = '#2b3a35';
+
 export interface GraphStyleOptions {
   selectedNodeId: string | null;
   secondSelectedNodeId: string | null;
@@ -84,9 +88,9 @@ export function getNodeColor(node: ForceGraphNode, options: GraphStyleOptions): 
     } else {
       // MQTT Client gets dimmed like other non-path nodes
       if (node.isMqttBroker) {
-        return '#d1d5db'; // Dimmed version of MQTT Client
+        return DIM_MQTT_COLOR; // Dimmed version of MQTT Client
       }
-      return node.isHidden ? '#e5e7eb' : '#d1d5db'; // Dim non-path nodes
+      return node.isHidden ? HIDDEN_NODE_COLOR : DIM_NODE_COLOR; // Dim non-path nodes
     }
   }
   
@@ -101,9 +105,9 @@ export function getNodeColor(node: ForceGraphNode, options: GraphStyleOptions): 
     } else {
       // MQTT Client gets dimmed like other non-reachable nodes
       if (node.isMqttBroker) {
-        return '#d1d5db'; // Dimmed version of MQTT Client
+        return DIM_MQTT_COLOR; // Dimmed version of MQTT Client
       }
-      return node.isHidden ? '#e5e7eb' : '#d1d5db'; // Dim non-reachable nodes
+      return node.isHidden ? HIDDEN_NODE_COLOR : DIM_NODE_COLOR; // Dim non-reachable nodes
     }
   }
   

@@ -1,11 +1,14 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
-import { LoginCredentials, TokenResponse, Node, NodeKeyHealthEntry, Edge, ChannelStatistics, ChannelDetail, MessageResponse, PublishTextMessagePayload, PublishNodeInfoPayload, PublishPositionPayload, PublishTraceroutePayload, PublishReachabilityPayload, PublishTelemetryPayload, CaptureSession, PublisherReactiveStatus, PublisherReactiveConfigUpdatePayload, PublisherPeriodicJob, PublisherPeriodicJobCreatePayload, PublisherPeriodicJobUpdatePayload, NodePositionHistoryEntry, NodeTelemetryHistoryEntry, NodeLatencyHistoryEntry, PortActivityEntry, NodePortActivityEntry, NodePortPacketEntry, PortNodeActivityEntry, OverviewMetricsResponse, VirtualNodePayload, VirtualNodeSecretResponse, VirtualNodeUpdatePayload, VirtualNodeOptionsResponse, VirtualNodePrefillResponse, NodeLink, NodeLinkPacket } from '@/types';
+import { LoginCredentials, TokenResponse, User, Node, NodeKeyHealthEntry, Edge, ChannelStatistics, ChannelDetail, MessageResponse, PublishTextMessagePayload, PublishNodeInfoPayload, PublishPositionPayload, PublishTraceroutePayload, PublishReachabilityPayload, PublishTelemetryPayload, CaptureSession, PublisherReactiveStatus, PublisherReactiveConfigUpdatePayload, PublisherPeriodicJob, PublisherPeriodicJobCreatePayload, PublisherPeriodicJobUpdatePayload, NodePositionHistoryEntry, NodeTelemetryHistoryEntry, NodeLatencyHistoryEntry, PortActivityEntry, NodePortActivityEntry, NodePortPacketEntry, PortNodeActivityEntry, OverviewMetricsResponse, VirtualNodePayload, VirtualNodeSecretResponse, VirtualNodeUpdatePayload, VirtualNodeOptionsResponse, VirtualNodePrefillResponse, NodeLink, NodeLinkPacket } from '@/types';
 import type { ActivityTimeRange } from '@/lib/activityFilters';
 import type { Interface } from '@/types/interface';
 
 const API_HOST_IP = process.env.NEXT_PUBLIC_API_HOST_IP || 'localhost';
-const API_BASE_URL = `http://${API_HOST_IP}:8000/api`;
+const API_PORT = process.env.NEXT_PUBLIC_API_PORT || '8000';
+const API_BASE_URL =
+  (process.env.NEXT_PUBLIC_API_BASE_URL || '').replace(/\/+$/, '') ||
+  `http://${API_HOST_IP}:${API_PORT}/api`;
 
 class ApiClient {
   async startInterface(interfaceId: number): Promise<AxiosResponse<{ message: string }>> {
@@ -88,6 +91,10 @@ class ApiClient {
   // Auth methods
   async login(credentials: LoginCredentials): Promise<AxiosResponse<TokenResponse>> {
     return this.client.post('/auth/login', credentials);
+  }
+
+  async getCurrentUser(): Promise<AxiosResponse<User>> {
+    return this.client.get('/auth/me');
   }
 
   async refreshToken(refresh: string): Promise<AxiosResponse<TokenResponse>> {
@@ -238,16 +245,11 @@ class ApiClient {
   }
 
   async getVirtualNodeOptions(): Promise<AxiosResponse<VirtualNodeOptionsResponse>> {
-    // Request virtual node options without attaching the Authorization
-    // header to avoid triggering a CORS preflight in the browser. These
-    // options are non-sensitive metadata and can be fetched anonymously.
-    return this.client.get('/nodes/virtual/options', { _skipAuth: true } as any);
+    return this.client.get('/nodes/virtual/options');
   }
 
   async getVirtualNodePrefill(): Promise<AxiosResponse<VirtualNodePrefillResponse>> {
-    // Prefill also returns non-sensitive suggestions; fetch without auth
-    // to avoid preflight issues when possible.
-    return this.client.get('/nodes/virtual/prefill', { _skipAuth: true } as any);
+    return this.client.get('/nodes/virtual/prefill');
   }
 
   async createVirtualNode(payload: VirtualNodePayload): Promise<AxiosResponse<VirtualNodeSecretResponse>> {

@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Target, Signal } from "lucide-react";
 import { clearPublishingReturnFocus, setPublishingReturnFocus } from "@/lib/publishingNavigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NodeActionButtonsProps {
   nodeId?: string | number | null;
@@ -26,6 +27,7 @@ export function NodeActionButtons({
 }: NodeActionButtonsProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isPrivileged } = useAuth();
   const originTabRaw = currentTabOverride ?? searchParams?.get("tab") ?? "overview";
   const originTab = originTabRaw || "overview";
   const shouldPreserveFocus =
@@ -75,6 +77,10 @@ export function NodeActionButtons({
     "disabled:opacity-50 disabled:cursor-not-allowed",
     size === "sm" ? "px-2.5 py-1.5 text-xs font-medium" : "px-3 py-2 text-sm font-semibold",
   ].join(" ");
+
+  if (!isPrivileged) {
+    return null;
+  }
 
   return (
     <div className={containerClasses}>

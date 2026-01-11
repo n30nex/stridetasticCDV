@@ -47,6 +47,14 @@ class NodeController:
     def _serialize_node(self, node: Node) -> NodeSchema:
         return serialize_node(node)
 
+    def _require_privileged(self, request):
+        user = getattr(request, "user", None)
+        if not user or not getattr(user, "is_authenticated", False):
+            return 401, MessageSchema(message="Not authenticated")
+        if not (getattr(user, "is_staff", False) or getattr(user, "is_superuser", False)):
+            return 403, MessageSchema(message="You do not have permission to perform this action.")
+        return None
+
     @route.get("/", response={200: List[NodeSchema], 404: MessageSchema, 400: MessageSchema}, auth=auth)
     def get_all_nodes(
         self,
@@ -141,30 +149,49 @@ class NodeController:
         )
         return results
 
-    @route.get("/virtual", response=List[NodeSchema], auth=auth)
-    def list_virtual_nodes(self):
+    @route.get("/virtual", response={200: List[NodeSchema], 401: MessageSchema, 403: MessageSchema}, auth=auth)
+    def list_virtual_nodes(self, request):
+        denial = self._require_privileged(request)
+        if denial:
+            return denial
         nodes = (
             Node.objects.filter(is_virtual=True)
             .prefetch_related("interfaces")
             .order_by("long_name", "node_id")
         )
-        return [self._serialize_node(node) for node in nodes]
+        return 200, [self._serialize_node(node) for node in nodes]
 
-    @route.get("/virtual/options", response=VirtualNodeOptionsSchema, auth=auth)
-    def get_virtual_node_options(self):
-        return VirtualNodeService.get_virtual_node_options()
+    @route.get("/virtual/options", response={200: VirtualNodeOptionsSchema, 401: MessageSchema, 403: MessageSchema}, auth=auth)
+    def get_virtual_node_options(self, request):
+        denial = self._require_privileged(request)
+        if denial:
+            return denial
+        return 200, VirtualNodeService.get_virtual_node_options()
 
-    @route.get("/virtual/prefill", response=VirtualNodePrefillSchema, auth=auth)
-    def get_virtual_node_prefill(self):
-        return VirtualNodeService.generate_virtual_node_prefill()
+    @route.get("/virtual/prefill", response={200: VirtualNodePrefillSchema, 401: MessageSchema, 403: MessageSchema}, auth=auth)
+    def get_virtual_node_prefill(self, request):
+        denial = self._require_privileged(request)
+        if denial:
+            return denial
+        return 200, VirtualNodeService.generate_virtual_node_prefill()
 
-    @route.post("/virtual/keypair", response=VirtualNodeKeyPairSchema, auth=auth)
-    def generate_virtual_node_keypair(self):
+    @route.post("/virtual/keypair", response={200: VirtualNodeKeyPairSchema, 401: MessageSchema, 403: MessageSchema}, auth=auth)
+    def generate_virtual_node_keypair(self, request):
+        denial = self._require_privileged(request)
+        if denial:
+            return denial
         secrets = VirtualNodeService.generate_key_pair()
-        return VirtualNodeKeyPairSchema(public_key=secrets.public_key, private_key=secrets.private_key)
+        return 200, VirtualNodeKeyPairSchema(public_key=secrets.public_key, private_key=secrets.private_key)
 
-    @route.post("/virtual", response={201: VirtualNodeSecretsSchema, 400: MessageSchema}, auth=auth)
-    def create_virtual_node(self, payload: VirtualNodeCreateSchema):
+    @route.post(
+        "/virtual",
+        response={201: VirtualNodeSecretsSchema, 400: MessageSchema, 401: MessageSchema, 403: MessageSchema},
+        auth=auth,
+    )
+    def create_virtual_node(self, request, payload: VirtualNodeCreateSchema):
+        denial = self._require_privileged(request)
+        if denial:
+            return denial
         payload_data = payload.dict(exclude_unset=True)
         try:
             node, secrets = VirtualNodeService.create_virtual_node(payload_data)
@@ -179,10 +206,19 @@ class NodeController:
 
     @route.put(
         "/virtual/{node_id}",
-        response={200: VirtualNodeSecretsSchema, 400: MessageSchema, 404: MessageSchema},
+        response={
+            200: VirtualNodeSecretsSchema,
+            400: MessageSchema,
+            401: MessageSchema,
+            403: MessageSchema,
+            404: MessageSchema,
+        },
         auth=auth,
     )
-    def update_virtual_node(self, node_id: str, payload: VirtualNodeUpdateSchema):
+    def update_virtual_node(self, request, node_id: str, payload: VirtualNodeUpdateSchema):
+        denial = self._require_privileged(request)
+        if denial:
+            return denial
         node = Node.objects.filter(node_id=node_id).first()
         if not node or not node.is_virtual:
             return 404, MessageSchema(message="Virtual node not found")
@@ -207,10 +243,13 @@ class NodeController:
 
     @route.delete(
         "/virtual/{node_id}",
-        response={200: MessageSchema, 404: MessageSchema, 400: MessageSchema},
+        response={200: MessageSchema, 400: MessageSchema, 401: MessageSchema, 403: MessageSchema, 404: MessageSchema},
         auth=auth,
     )
-    def delete_virtual_node(self, node_id: str):
+    def delete_virtual_node(self, request, node_id: str):
+        denial = self._require_privileged(request)
+        if denial:
+            return denial
         node = Node.objects.filter(node_id=node_id).first()
         if not node or not node.is_virtual:
             return 404, MessageSchema(message="Virtual node not found")

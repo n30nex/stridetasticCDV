@@ -15,7 +15,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - ./timescale_stridetastic:/var/lib/postgresql/data
+      - timescale_stridetastic:/var/lib/postgresql/data
 
 
   web_stridetastic:
@@ -47,7 +47,7 @@ services:
       dockerfile: ./api_stridetastic/Dockerfile
     restart: always
     ports:
-      - "8000:8000"
+      - "8001:8000"
     container_name: api_stridetastic
     hostname: api_stridetastic
     networks:
@@ -58,6 +58,7 @@ services:
       - ./api_stridetastic:/app
     env_file:
       - .env
+    command: sh -c "python /app/wait_for_db.py && python manage.py migrate && python manage.py seeds && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - timescale_stridetastic
     devices:
@@ -81,7 +82,7 @@ services:
     build:
       context: .
       dockerfile: ./api_stridetastic/Dockerfile
-    command: celery -A stridetastic_api worker -l info
+    command: sh -c "python /app/wait_for_db.py && celery -A stridetastic_api worker -l info"
     restart: always
     container_name: celery_stridetastic
     hostname: celery_stridetastic
@@ -102,7 +103,7 @@ services:
     build:
       context: .
       dockerfile: ./api_stridetastic/Dockerfile
-    command: celery -A stridetastic_api beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    command: sh -c "python /app/wait_for_db.py && celery -A stridetastic_api beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     restart: always
     container_name: celery_beat_stridetastic
     hostname: celery_beat_stridetastic

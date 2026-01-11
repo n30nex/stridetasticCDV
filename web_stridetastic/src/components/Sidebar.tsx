@@ -25,7 +25,7 @@ interface SidebarProps {
 
 export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true);
-  const { user, logout } = useAuth();
+  const { user, logout, isPrivileged } = useAuth();
 
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: Home },
@@ -37,6 +37,12 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
     { id: 'captures', label: 'Captures', icon: HardDrive },
     { id: 'actions', label: 'Actions', icon: Radio },
   ];
+
+  const visibleMenuItems = isPrivileged
+    ? menuItems
+    : menuItems.filter(
+        (item) => item.id !== 'captures' && item.id !== 'actions' && item.id !== 'virtual-nodes'
+      );
 
   // Helper to close sidebar on mobile
   const closeSidebarOnMobile = () => {
@@ -77,7 +83,7 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1">
-            {menuItems.map((item) => {
+            {visibleMenuItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
 
@@ -115,7 +121,7 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
                 <p className="text-sm font-medium text-gray-900">
                   {user?.username || 'User'}
                 </p>
-                <p className="text-xs text-gray-500">Administrator</p>
+                <p className="text-xs text-gray-500">{isPrivileged ? 'Administrator' : 'Guest'}</p>
               </div>
             </div>
             <button

@@ -53,7 +53,7 @@ class GraphController:
 
         edges = list(edges_qs)
         if not edges:
-            return 404, MessageSchema(message="No edges found")
+            return 200, []
         return 200, [EdgeSchema(
             source_node_id=edge.source_node.id,
             target_node_id=edge.target_node.id,

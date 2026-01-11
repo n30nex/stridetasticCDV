@@ -151,7 +151,7 @@ const TILE_LAYERS = {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   },
   minimal: {
-    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
   }
 };
@@ -571,14 +571,14 @@ export default function NetworkMap({ className = '' }: NetworkMapProps) {
       const color = node.color || BRAND_PRIMARY;
       const size = 24;
       
-      const borderColor = isMqttConnected ? '#8b5cf6' : '#ffffff';
+      const borderColor = isMqttConnected ? '#8b5cf6' : '#e7f2ee';
       const borderWidth = isMqttConnected ? 3 : 2;
       
       // Add visual indicator for spread nodes (artificially positioned)
       const isSpread = node.isManuallyPositioned;
       const spreadIndicator = isSpread ? `
-        <circle cx="18" cy="6" r="3" fill="#f59e0b" stroke="#ffffff" stroke-width="1"/>
-        <text x="18" y="8" text-anchor="middle" fill="#ffffff" font-size="6" font-weight="bold">S</text>
+        <circle cx="18" cy="6" r="3" fill="#f59e0b" stroke="#e7f2ee" stroke-width="1"/>
+        <text x="18" y="8" text-anchor="middle" fill="#e7f2ee" font-size="6" font-weight="bold">S</text>
       ` : '';
       
       const svg = `
@@ -626,7 +626,7 @@ export default function NetworkMap({ className = '' }: NetworkMapProps) {
   }, [visibleLinks, getLinkCoordinates, getLinkColor, getLinkOpacity, hoveredLink]);
 
   return (
-    <div className={`flex flex-col h-full ${className} light`}>
+    <div className={`flex flex-col h-full ${className}`}>
       {/* Header Controls */}
       <div className="p-3 sm:p-4 bg-white border-b border-gray-200 text-gray-900">
         {/* Title Section */}
@@ -661,7 +661,7 @@ export default function NetworkMap({ className = '' }: NetworkMapProps) {
                   ? 'bg-blue-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-50'
               }`}
-              title="Minimal View"
+              title="Dark View"
               style={{ minHeight: '36px' }}
             >
               <Minimize2 className="h-4 w-4" />
@@ -929,8 +929,8 @@ export default function NetworkMap({ className = '' }: NetworkMapProps) {
           }
         }}
       >
-        {isLoading && (
-          <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-[1000]">
+      {isLoading && (
+          <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[1000]">
             <div className="text-center">
               <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
               <p className="text-gray-600">Loading network data...</p>

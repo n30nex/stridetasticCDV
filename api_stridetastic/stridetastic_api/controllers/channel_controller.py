@@ -27,8 +27,24 @@ class ChannelController:
         """
         channels = Channel.objects.all()
         if not channels:
-            return 404, MessageSchema(message="No channels found")
-        return 200, [ChannelSchema.from_orm(channel) for channel in channels]
+            return 200, []
+
+        channel_schemas = []
+        for channel in channels:
+            members = [serialize_node(member) for member in channel.members.all()]
+            interfaces = [iface.display_name for iface in channel.interfaces.all()] if hasattr(channel, 'interfaces') else []
+            channel_schemas.append(
+                ChannelSchema(
+                    channel_id=channel.channel_id,
+                    channel_num=channel.channel_num,
+                    psk=channel.psk,
+                    first_seen=channel.first_seen,
+                    last_seen=channel.last_seen,
+                    members=members,
+                    interfaces=interfaces,
+                )
+            )
+        return 200, channel_schemas
 
 
     @route.get("/statistics", response={200: ChannelsStatisticsSchema, 404: MessageSchema}, auth=auth)
@@ -38,7 +54,7 @@ class ChannelController:
         """
         channels = Channel.objects.all()
         if not channels:
-            return 404, MessageSchema(message="No channels found")
+            return 200, ChannelsStatisticsSchema(channels=[])
 
         statistics = []
         for channel in channels:
@@ -48,7 +64,7 @@ class ChannelController:
             statistics.append(ChannelStatisticsSchema(**channel_stats))
 
         if not statistics:
-            return 404, MessageSchema(message="No channel statistics available")
+            return 200, ChannelsStatisticsSchema(channels=[])
 
         return 200, ChannelsStatisticsSchema(channels=statistics)
             

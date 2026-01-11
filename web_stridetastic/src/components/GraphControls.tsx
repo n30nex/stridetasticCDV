@@ -95,11 +95,11 @@ export function GraphControls({
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h2 className="text-xl sm:text-2xl font-bold truncate" style={{ color: '#111827' }}>
+          <h2 className="text-xl sm:text-2xl font-bold truncate" style={{ color: 'var(--cv-text-strong)' }}>
             Network Topology
           </h2>
           {lastUpdate && (
-            <p className="text-xs sm:text-sm" style={{ color: '#6b7280' }}>
+            <p className="text-xs sm:text-sm" style={{ color: 'var(--cv-text-muted)' }}>
               <span className="hidden sm:inline">Last updated: {formatDate(lastUpdate.toISOString())} • </span>
               {nodeCount} nodes • {linkCount} links
             </p>

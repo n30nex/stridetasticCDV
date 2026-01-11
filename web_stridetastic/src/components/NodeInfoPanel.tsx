@@ -83,14 +83,14 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
   return (
     <div 
       className="rounded-lg border shadow-sm p-6 transform transition-all duration-300 ease-in-out max-h-[80vh] overflow-y-auto" 
-      style={{ backgroundColor: '#ffffff', borderColor, borderWidth: '2px' }}
+      style={{ backgroundColor: 'var(--cv-surface-1)', borderColor, borderWidth: '2px' }}
     >
       <div className="flex items-center justify-between mb-6">
         <div>
           <h4 className="text-sm font-medium mb-1" style={{ color: borderColor }}>
             {title}
           </h4>
-          <h3 className="text-xl font-semibold" style={{ color: '#111827' }}>
+          <h3 className="text-xl font-semibold" style={{ color: 'var(--cv-text-strong)' }}>
             {node.short_name && node.long_name 
               ? `${node.short_name} - ${node.long_name}`
               : node.short_name || node.long_name || `${node.node_id}`}
@@ -100,7 +100,7 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
           <button
             onClick={onClose}
             className="p-2 rounded-full transition-colors hover:bg-gray-100"
-            style={{ backgroundColor: 'transparent', color: '#111827' }}
+            style={{ backgroundColor: 'transparent', color: 'var(--cv-text-strong)' }}
             title="Close"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,45 +121,45 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Basic Information */}
         <div className="space-y-4">
-          <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: '#111827', borderColor: '#e5e7eb' }}>
+          <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: 'var(--cv-text-strong)', borderColor: 'var(--cv-border)' }}>
             <Wifi className="h-4 w-4 mr-2" style={{ color: borderColor }} />
             Basic Information
           </h4>
           
           <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-              <span style={{ color: '#4b5563' }}>Node ID:</span>
-              <span className="font-mono text-xs" style={{ color: '#111827' }}>
+              <span style={{ color: 'var(--cv-text-muted)' }}>Node ID:</span>
+              <span className="font-mono text-xs" style={{ color: 'var(--cv-text-strong)' }}>
                 {node.node_id}
               </span>
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <span style={{ color: '#4b5563' }}>Short Name:</span>
-              <span style={{ color: '#111827' }}>
+              <span style={{ color: 'var(--cv-text-muted)' }}>Short Name:</span>
+              <span style={{ color: 'var(--cv-text-strong)' }}>
                 {node.short_name || 'N/A'}
               </span>
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <span style={{ color: '#4b5563' }}>Long Name:</span>
-              <span style={{ color: '#111827' }}>
+              <span style={{ color: 'var(--cv-text-muted)' }}>Long Name:</span>
+              <span style={{ color: 'var(--cv-text-strong)' }}>
                 {node.long_name || 'N/A'}
               </span>
             </div>
 
             {node.hw_model && (
               <div className="flex items-center justify-between text-sm">
-                <span style={{ color: '#4b5563' }}>Hardware:</span>
-                <span style={{ color: '#111827' }}>
+                <span style={{ color: 'var(--cv-text-muted)' }}>Hardware:</span>
+                <span style={{ color: 'var(--cv-text-strong)' }}>
                   {node.hw_model}
                 </span>
               </div>
             )}
 
             <div className="flex items-center justify-between text-sm">
-              <span style={{ color: '#4b5563' }}>Role:</span>
-              <span className="capitalize" style={{ color: '#111827' }}>
+              <span style={{ color: 'var(--cv-text-muted)' }}>Role:</span>
+              <span className="capitalize" style={{ color: 'var(--cv-text-strong)' }}>
                 {node.role || 'Unknown'}
               </span>
             </div>
@@ -168,7 +168,7 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
         {/* Position Information */}
         <div className="space-y-4">
-          <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: '#111827', borderColor: '#e5e7eb' }}>
+          <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: 'var(--cv-text-strong)', borderColor: 'var(--cv-border)' }}>
             <MapPin className="h-4 w-4 mr-2" style={{ color: borderColor }} />
             Position Data
           </h4>
@@ -177,16 +177,16 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
             {(node.latitude && node.longitude) ? (
               <>
                 <div className="flex items-center justify-between text-sm">
-                  <span style={{ color: '#4b5563' }}>Coordinates:</span>
-                  <span className="font-mono text-xs" style={{ color: '#111827' }}>
+                  <span style={{ color: 'var(--cv-text-muted)' }}>Coordinates:</span>
+                  <span className="font-mono text-xs" style={{ color: 'var(--cv-text-strong)' }}>
                     {node.latitude.toFixed(6)}, {node.longitude.toFixed(6)}
                   </span>
                 </div>
                 
                 {node.altitude && (
                   <div className="flex items-center justify-between text-sm">
-                    <span style={{ color: '#4b5563' }}>Altitude:</span>
-                    <span style={{ color: '#111827' }}>
+                    <span style={{ color: 'var(--cv-text-muted)' }}>Altitude:</span>
+                    <span style={{ color: 'var(--cv-text-strong)' }}>
                       {node.altitude.toFixed(1)}m
                     </span>
                   </div>
@@ -194,8 +194,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
                 
                 {node.position_accuracy && (
                   <div className="flex items-center justify-between text-sm">
-                    <span style={{ color: '#4b5563' }}>Accuracy:</span>
-                    <span style={{ color: '#111827' }}>
+                    <span style={{ color: 'var(--cv-text-muted)' }}>Accuracy:</span>
+                    <span style={{ color: 'var(--cv-text-strong)' }}>
                       {node.position_accuracy} bits (~{precisionBitsToRadius(node.position_accuracy).toFixed(1)}m)
                     </span>
                   </div>
@@ -203,8 +203,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
                 {node.location_source !== undefined && node.location_source !== null && (
                   <div className="flex items-center justify-between text-sm">
-                    <span style={{ color: '#4b5563' }}>Location Source:</span>
-                    <span style={{ color: '#111827' }}>
+                    <span style={{ color: 'var(--cv-text-muted)' }}>Location Source:</span>
+                    <span style={{ color: 'var(--cv-text-strong)' }}>
                       {formatLocationSourceLabel(node.location_source)}
                     </span>
                   </div>
@@ -225,7 +225,7 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
                 )}
               </>
             ) : (
-              <div className="flex items-center text-sm" style={{ color: '#9ca3af' }}>
+              <div className="flex items-center text-sm" style={{ color: 'var(--cv-text-subtle)' }}>
                 <MapPin className="h-4 w-4 mr-2" />
                 <span>No location data available</span>
               </div>
@@ -235,7 +235,7 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
         {/* Power & System Status */}
         <div className="space-y-4">
-          <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: '#111827', borderColor: '#e5e7eb' }}>
+          <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: 'var(--cv-text-strong)', borderColor: 'var(--cv-border)' }}>
             <Battery className="h-4 w-4 mr-2" style={{ color: borderColor }} />
             Power & System
           </h4>
@@ -243,7 +243,7 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
           <div className="space-y-3">
             {node.battery_level && (
               <div className="flex items-center justify-between text-sm">
-                <span style={{ color: '#4b5563' }}>Battery:</span>
+                <span style={{ color: 'var(--cv-text-muted)' }}>Battery:</span>
                 <span style={{ color: getBatteryColor(node.battery_level) }}>
                   {node.battery_level}%
                 </span>
@@ -252,8 +252,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
             {node.voltage && (
               <div className="flex items-center justify-between text-sm">
-                <span style={{ color: '#4b5563' }}>Voltage:</span>
-                <span style={{ color: '#111827' }}>
+                <span style={{ color: 'var(--cv-text-muted)' }}>Voltage:</span>
+                <span style={{ color: 'var(--cv-text-strong)' }}>
                   {node.voltage}V
                 </span>
               </div>
@@ -261,8 +261,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
             {node.uptime_seconds && (
               <div className="flex items-center justify-between text-sm">
-                <span style={{ color: '#4b5563' }}>Uptime:</span>
-                <span style={{ color: '#111827' }}>
+                <span style={{ color: 'var(--cv-text-muted)' }}>Uptime:</span>
+                <span style={{ color: 'var(--cv-text-strong)' }}>
                   {formatUptime(node.uptime_seconds)}
                 </span>
               </div>
@@ -272,23 +272,23 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
         {/* Network Status */}
         <div className="space-y-4">
-          <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: '#111827', borderColor: '#e5e7eb' }}>
+          <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: 'var(--cv-text-strong)', borderColor: 'var(--cv-border)' }}>
             <Radio className="h-4 w-4 mr-2" style={{ color: borderColor }} />
             Network Status
           </h4>
           
           <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-              <span style={{ color: '#4b5563' }}>Last Seen:</span>
-              <span className="text-xs" style={{ color: '#111827' }}>
+              <span style={{ color: 'var(--cv-text-muted)' }}>Last Seen:</span>
+              <span className="text-xs" style={{ color: 'var(--cv-text-strong)' }}>
                 {formatDate(node.last_seen)}
               </span>
             </div>
 
             {node.first_seen && (
               <div className="flex items-center justify-between text-sm">
-                <span style={{ color: '#4b5563' }}>First Seen:</span>
-                <span className="text-xs" style={{ color: '#111827' }}>
+                <span style={{ color: 'var(--cv-text-muted)' }}>First Seen:</span>
+                <span className="text-xs" style={{ color: 'var(--cv-text-strong)' }}>
                   {formatDate(node.first_seen)}
                 </span>
               </div>
@@ -296,8 +296,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
             {node.channel_utilization && (
               <div className="flex items-center justify-between text-sm">
-                <span style={{ color: '#4b5563' }}>Channel Usage:</span>
-                <span style={{ color: '#111827' }}>
+                <span style={{ color: 'var(--cv-text-muted)' }}>Channel Usage:</span>
+                <span style={{ color: 'var(--cv-text-strong)' }}>
                   {node.channel_utilization.toFixed(1)}%
                 </span>
               </div>
@@ -305,23 +305,23 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
             {node.air_util_tx && (
               <div className="flex items-center justify-between text-sm">
-                <span style={{ color: '#4b5563' }}>Air Time TX:</span>
-                <span style={{ color: '#111827' }}>
+                <span style={{ color: 'var(--cv-text-muted)' }}>Air Time TX:</span>
+                <span style={{ color: 'var(--cv-text-strong)' }}>
                   {node.air_util_tx.toFixed(1)}%
                 </span>
               </div>
             )}
 
             <div className="flex items-center justify-between text-sm">
-              <span style={{ color: '#4b5563' }}>Reachability:</span>
+              <span style={{ color: 'var(--cv-text-muted)' }}>Reachability:</span>
               <span className={latencyStatusLabel.className}>
                 {latencyStatusLabel.label}
               </span>
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <span style={{ color: '#4b5563' }}>Latency:</span>
-              <span style={{ color: '#111827' }}>
+              <span style={{ color: 'var(--cv-text-muted)' }}>Latency:</span>
+              <span style={{ color: 'var(--cv-text-strong)' }}>
                 {latencyLabel}
               </span>
             </div>
@@ -331,7 +331,7 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
         {/* Environmental Data */}
         {(node.temperature || node.relative_humidity || node.barometric_pressure || node.gas_resistance || node.iaq) && (
           <div className="space-y-4">
-            <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: '#111827', borderColor: '#e5e7eb' }}>
+            <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: 'var(--cv-text-strong)', borderColor: 'var(--cv-border)' }}>
               <Thermometer className="h-4 w-4 mr-2" style={{ color: borderColor }} />
               Environmental
             </h4>
@@ -339,8 +339,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
             <div className="space-y-3">
               {node.temperature && (
                 <div className="flex items-center justify-between text-sm">
-                  <span style={{ color: '#4b5563' }}>Temperature:</span>
-                  <span style={{ color: '#111827' }}>
+                  <span style={{ color: 'var(--cv-text-muted)' }}>Temperature:</span>
+                  <span style={{ color: 'var(--cv-text-strong)' }}>
                     {node.temperature}°C
                   </span>
                 </div>
@@ -348,8 +348,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
               {node.relative_humidity && (
                 <div className="flex items-center justify-between text-sm">
-                  <span style={{ color: '#4b5563' }}>Humidity:</span>
-                  <span style={{ color: '#111827' }}>
+                  <span style={{ color: 'var(--cv-text-muted)' }}>Humidity:</span>
+                  <span style={{ color: 'var(--cv-text-strong)' }}>
                     {node.relative_humidity}%
                   </span>
                 </div>
@@ -357,8 +357,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
               {node.barometric_pressure && (
                 <div className="flex items-center justify-between text-sm">
-                  <span style={{ color: '#4b5563' }}>Pressure:</span>
-                  <span style={{ color: '#111827' }}>
+                  <span style={{ color: 'var(--cv-text-muted)' }}>Pressure:</span>
+                  <span style={{ color: 'var(--cv-text-strong)' }}>
                     {node.barometric_pressure} hPa
                   </span>
                 </div>
@@ -366,8 +366,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
               {node.gas_resistance && (
                 <div className="flex items-center justify-between text-sm">
-                  <span style={{ color: '#4b5563' }}>Gas Resistance:</span>
-                  <span style={{ color: '#111827' }}>
+                  <span style={{ color: 'var(--cv-text-muted)' }}>Gas Resistance:</span>
+                  <span style={{ color: 'var(--cv-text-strong)' }}>
                     {node.gas_resistance.toFixed(0)} Ω
                   </span>
                 </div>
@@ -375,8 +375,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
               {node.iaq && (
                 <div className="flex items-center justify-between text-sm">
-                  <span style={{ color: '#4b5563' }}>Air Quality:</span>
-                  <span style={{ color: '#111827' }}>
+                  <span style={{ color: 'var(--cv-text-muted)' }}>Air Quality:</span>
+                  <span style={{ color: 'var(--cv-text-strong)' }}>
                     {node.iaq}
                   </span>
                 </div>
@@ -387,7 +387,7 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
         {/* Security & Configuration */}
         <div className="space-y-4">
-          <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: '#111827', borderColor: '#e5e7eb' }}>
+          <h4 className="font-medium border-b pb-2 flex items-center" style={{ color: 'var(--cv-text-strong)', borderColor: 'var(--cv-border)' }}>
             <Shield className="h-4 w-4 mr-2" style={{ color: borderColor }} />
             Configuration
           </h4>
@@ -395,24 +395,24 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
           <div className="space-y-3">
             {node.mac_address && (
               <div className="flex items-center justify-between text-sm">
-                <span style={{ color: '#4b5563' }}>MAC Address:</span>
-                <span className="font-mono text-xs" style={{ color: '#111827' }}>
+                <span style={{ color: 'var(--cv-text-muted)' }}>MAC Address:</span>
+                <span className="font-mono text-xs" style={{ color: 'var(--cv-text-strong)' }}>
                   {node.mac_address}
                 </span>
               </div>
             )}
 
             <div className="flex items-center justify-between text-sm">
-              <span style={{ color: '#4b5563' }}>Licensed:</span>
-              <span style={{ color: '#111827' }}>
+              <span style={{ color: 'var(--cv-text-muted)' }}>Licensed:</span>
+              <span style={{ color: 'var(--cv-text-strong)' }}>
                 {node.is_licensed ? 'Yes' : 'No'}
               </span>
             </div>
 
             {node.is_unmessagable && (
               <div className="flex items-center justify-between text-sm">
-                <span style={{ color: '#4b5563' }}>Messaging:</span>
-                <span style={{ color: '#ef4444' }}>
+                <span style={{ color: 'var(--cv-text-muted)' }}>Messaging:</span>
+                <span style={{ color: 'var(--cv-danger)' }}>
                   Disabled
                 </span>
               </div>
@@ -420,8 +420,8 @@ export function NodeInfoPanel({ node, title, borderColor, onClose, onNavigateToM
 
             {node.public_key && (
               <div className="flex items-center justify-between text-sm">
-                <span style={{ color: '#4b5563' }}>Public Key:</span>
-                <span className="font-mono text-xs" style={{ color: '#111827' }}>
+                <span style={{ color: 'var(--cv-text-muted)' }}>Public Key:</span>
+                <span className="font-mono text-xs" style={{ color: 'var(--cv-text-strong)' }}>
                   {node.public_key.slice(0, 16)}...
                 </span>
               </div>

@@ -1,6 +1,7 @@
 from .auth_schemas import (
     LoginSchema,
-    RefreshTokenSchema
+    RefreshTokenSchema,
+    UserSchema,
 )
 
 from .node_schemas import (

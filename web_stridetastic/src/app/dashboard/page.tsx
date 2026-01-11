@@ -7,16 +7,20 @@ import Overview from '@/components/Overview';
 import NetworkGraph from '@/components/NetworkGraph';
 import NetworkMap from '@/components/NetworkMap';
 import { MapFocusProvider, useMapFocus } from '@/contexts/MapFocusContext';
+import { useAuth } from '@/contexts/AuthContext';
 import ActionsPanel from '@/components/actions/PublishingActions';
 import CapturesPanel from '@/components/CapturesPanel';
 import VirtualNodesPanel from '@/components/VirtualNodesPanel';
 import LinksPanel from '@/components/LinksPanel';
 import KeyHealthPanel from '@/components/KeyHealthPanel';
 
+const RESTRICTED_TABS = new Set(['captures', 'actions', 'virtual-nodes']);
+
 function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState('overview');
+  const { isPrivileged, isLoading } = useAuth();
   const { setFocusedNodeId, setShouldFocusOnLoad } = useMapFocus();
 
   useEffect(() => {
@@ -57,10 +61,25 @@ function DashboardContent() {
     router.push(queryString ? `?${queryString}` : '?', { scroll: false });
   }, [router, searchParams]);
 
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    if (!isPrivileged && RESTRICTED_TABS.has(activeTab)) {
+      setActiveTab('overview');
+      updateQueryParams('overview');
+    }
+  }, [activeTab, isLoading, isPrivileged, updateQueryParams]);
+
   const handleTabChange = useCallback((tab: string) => {
+    if (!isPrivileged && RESTRICTED_TABS.has(tab)) {
+      setActiveTab('overview');
+      updateQueryParams('overview');
+      return;
+    }
     setActiveTab(tab);
     updateQueryParams(tab);
-  }, [updateQueryParams]);
+  }, [isPrivileged, updateQueryParams]);
 
   const handleNavigateToMap = (nodeId: string) => {
     setFocusedNodeId(nodeId);
@@ -70,6 +89,9 @@ function DashboardContent() {
   };
 
   const renderContent = () => {
+    if (!isPrivileged && RESTRICTED_TABS.has(activeTab)) {
+      return <Overview />;
+    }
     switch (activeTab) {
       case 'overview':
         return <Overview />;

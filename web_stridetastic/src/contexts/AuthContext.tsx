@@ -8,6 +8,7 @@ import { apiClient } from '@/lib/api';
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  isPrivileged: boolean;
   isLoading: boolean;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -20,16 +21,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = !!user;
+  const isPrivileged = Boolean(user && (user.is_staff || user.is_superuser));
 
   useEffect(() => {
-    // Check if user is already logged in
-    const accessToken = Cookies.get('access_token');
-    if (accessToken) {
-      // You might want to validate the token or get user info here
-      // For now, we'll just set a basic user object
-      setUser({ id: 1, username: 'user' });
-    }
-    setIsLoading(false);
+    const loadUser = async () => {
+      const accessToken = Cookies.get('access_token');
+      if (!accessToken) {
+        setUser(null);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await apiClient.getCurrentUser();
+        setUser(response.data);
+      } catch (error) {
+        console.error('Failed to load user profile:', error);
+        apiClient.logout();
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUser();
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
@@ -41,8 +56,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       Cookies.set('access_token', access, { expires: 1 }); // 1 day
       Cookies.set('refresh_token', refresh, { expires: 7 }); // 7 days
 
-      // Set user (you might want to decode the JWT to get user info)
-      setUser({ id: 1, username });
+      try {
+        const me = await apiClient.getCurrentUser();
+        setUser(me.data);
+      } catch (error) {
+        console.error('Failed to fetch user profile after login:', error);
+        apiClient.logout();
+        setUser(null);
+        return false;
+      }
 
       return true;
     } catch (error) {
@@ -60,6 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider value={{
       user,
       isAuthenticated,
+      isPrivileged,
       isLoading,
       login,
       logout,

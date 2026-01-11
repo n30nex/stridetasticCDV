@@ -4,12 +4,13 @@ from uuid import UUID
 
 from django.http import FileResponse, Http404
 from ninja import Schema
-from ninja_extra import api_controller, permissions, route
+from ninja_extra import api_controller, route
 from ninja_jwt.authentication import JWTAuth
 
 from ..schemas.common_schemas import MessageSchema
 from ..schemas.capture_schemas import CaptureSessionSchema, CaptureStartSchema
 from ..services.service_manager import ServiceManager
+from ..permissions import IsPrivilegedUser
 
 
 auth = JWTAuth()
@@ -23,7 +24,7 @@ class CaptureBulkDeleteResponse(Schema):
 	deleted: int
 
 
-@api_controller("/captures", tags=["Captures"], permissions=[permissions.IsAuthenticated])
+@api_controller("/captures", tags=["Captures"], permissions=[IsPrivilegedUser])
 class CaptureController:
 	def __init__(self):
 		self.service_manager = ServiceManager.get_instance()
